@@ -1,6 +1,7 @@
 from urllib.request import Request, urlopen
 from bs4 import BeautifulSoup
 from pprint import pprint
+import click
 
 pool_pages = {
 'balboa':'http://sfrecpark.org/destination/balboa-park/balboa-pool/',
@@ -15,41 +16,52 @@ pool_pages = {
 }
 
 just_the_facts = []
+
+# magic strings
 schedule_div_id = "tab-3"
 no_classes = "There are no Classes at this time"
 
-req = Request(pool_pages['coffman'], headers={'User-Agent': 'Mozilla/5.0'})
-page = urlopen(req).read()
-soup = BeautifulSoup(page,"html.parser")
+"""
+@click.command()
+@click.option('--pool', default='mlk', help='name of pool')
+"""
+def scrape(pool):
+	req = Request(pool_pages[pool], headers={'User-Agent': 'Mozilla/5.0'})
+	page = urlopen(req).read()
+	soup = BeautifulSoup(page,"html.parser")
 
-# the whole weekly schedule div
-sched = soup.find(id=schedule_div_id)
+	# the whole weekly schedule div
+	sched = soup.find(id=schedule_div_id)
 
-# all the days in order, not guardanteed to start on any particular day
-days = sched.find_all('h3')
+	# all the days in order, not guardanteed to start on any particular day
+	days = sched.find_all('h3')
 
-# look at each day
-for day in days:
-	day_name = day.string
-	for sibling in day.next_siblings:
-		# found the no_classes text, so break out of this day
-		if sibling.string == no_classes:
-			just_the_facts.append([day_name,'no classes'])
-			break
+	# look at each day
+	for day in days:
+		day_name = day.string
+		for sibling in day.next_siblings:
+			# found the no_classes text, so break out of this day
+			if sibling.string == no_classes:
+				just_the_facts.append([day_name,'no classes'])
+				break
 
-		# find the schedule table
-		if sibling.name == "table":
-			rows = sibling.find_all('tr')
-			for row in rows:
-				cols = row.find_all('td')
-				cols = [ele.text.strip() for ele in cols]
-				if len(cols) > 0: 
-					# sometimes the name of the activity, cols[0], has an
-					# odd bit of stuff outside the quotes. See coffman pool
-					# for an example. When using pprint it causes extra line breaks.
-					just_the_facts.append([day_name,cols[0],cols[1],cols[2]])
+			# find the schedule table
+			if sibling.name == "table":
+				rows = sibling.find_all('tr')
+				for row in rows:
+					cols = row.find_all('td')
+					cols = [ele.text.strip() for ele in cols]
+					if len(cols) > 0:
+						# sometimes the name of the activity, cols[0], has an
+						# odd bit of stuff outside the quotes. See coffman pool
+						# for an example. When using pprint it causes extra line breaks.
+						just_the_facts.append([pool,day_name.strip(),cols[0].strip(),cols[1].strip(),cols[2].strip()])
 
-			# only one schedule table per day, so leave this day now
-			break
+				# only one schedule table per day, so leave this day now
+				break
 
-pprint(just_the_facts)
+if __name__ == "__main__":
+	for k in pool_pages.keys():
+		scrape(k)
+
+	print(just_the_facts)
