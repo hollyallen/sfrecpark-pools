@@ -1,7 +1,7 @@
 from urllib.request import Request, urlopen
 from bs4 import BeautifulSoup
-from pprint import pprint
-import click
+import json
+import pandas
 
 pool_pages = {
 'balboa':'http://sfrecpark.org/destination/balboa-park/balboa-pool/',
@@ -15,16 +15,12 @@ pool_pages = {
 'sava':'http://sfrecpark.org/destination/carl-larsen-park/sava-pool/'
 }
 
-just_the_facts = []
+pool_schedules = []
 
 # magic strings
 schedule_div_id = "tab-3"
 no_classes = "There are no Classes at this time"
 
-"""
-@click.command()
-@click.option('--pool', default='mlk', help='name of pool')
-"""
 def scrape(pool):
 	req = Request(pool_pages[pool], headers={'User-Agent': 'Mozilla/5.0'})
 	page = urlopen(req).read()
@@ -38,11 +34,10 @@ def scrape(pool):
 
 	# look at each day
 	for day in days:
-		day_name = day.string
+		day_name = day.string.strip()
 		for sibling in day.next_siblings:
 			# found the no_classes text, so break out of this day
 			if sibling.string == no_classes:
-				just_the_facts.append([day_name,'no classes'])
 				break
 
 			# find the schedule table
@@ -52,16 +47,18 @@ def scrape(pool):
 					cols = row.find_all('td')
 					cols = [ele.text.strip() for ele in cols]
 					if len(cols) > 0:
-						# sometimes the name of the activity, cols[0], has an
-						# odd bit of stuff outside the quotes. See coffman pool
-						# for an example. When using pprint it causes extra line breaks.
-						just_the_facts.append([pool,day_name.strip(),cols[0].strip(),cols[1].strip(),cols[2].strip()])
+						pool_schedules.append((pool,day_name,cols[0].strip(),cols[1].strip(),cols[2].strip()))
 
 				# only one schedule table per day, so leave this day now
 				break
 
 if __name__ == "__main__":
-	for k in pool_pages.keys():
-		scrape(k)
+    for k in pool_pages.keys():
+	    scrape(k)
+    
+    #with open('data.json', 'w') as outfile:
+	#    json.dump(pool_schedules, outfile)
 
-	print(just_the_facts)
+    pools_dataframe = pandas.DataFrame(pool_schedules, columns=['pool', 'day', 'class', 'start', 'end'])
+    pools_dataframe.to_csv('data.csv', index=False, encoding='utf-8')  
+
