@@ -1,16 +1,17 @@
 from urllib.request import Request, urlopen
 from bs4 import BeautifulSoup
+import datetime
 
 pool_pages = {
-'balboa':'http://sfrecpark.org/destination/balboa-park/balboa-pool/',
-'coffman':'http://sfrecpark.org/destination/herz-playground/coffman-pool/',
-'garfield':'http://sfrecpark.org/destination/garfield-square/garfield-pool/',
-'hamilton':'http://sfrecpark.org/destination/hamilton-rec-center/hamilton-pool/',
-'mlk':'http://sfrecpark.org/destination/bay-view-playground/martin-luther-king-jr-pool/',
-'mission':'http://sfrecpark.org/destination/mission-playground/mission-community-pool/',
-'north beach':'http://sfrecpark.org/destination/joe-dimaggio-playground/north-beach-pool/',
-'rossi':'http://sfrecpark.org/destination/angelo-j-rossi-playground/rossi-community-pool/',
-'sava':'http://sfrecpark.org/destination/carl-larsen-park/sava-pool/'
+'Balboa':'http://sfrecpark.org/destination/balboa-park/balboa-pool/',
+'Coffman':'http://sfrecpark.org/destination/herz-playground/coffman-pool/',
+'Garfield':'http://sfrecpark.org/destination/garfield-square/garfield-pool/',
+'Hamilton':'http://sfrecpark.org/destination/hamilton-rec-center/hamilton-pool/',
+'MLK':'http://sfrecpark.org/destination/bay-view-playground/martin-luther-king-jr-pool/',
+'Mission':'http://sfrecpark.org/destination/mission-playground/mission-community-pool/',
+'North Beach':'http://sfrecpark.org/destination/joe-dimaggio-playground/north-beach-pool/',
+'Rossi':'http://sfrecpark.org/destination/angelo-j-rossi-playground/rossi-community-pool/',
+'Sava':'http://sfrecpark.org/destination/carl-larsen-park/sava-pool/'
 }
 
 pool_schedules = []
@@ -57,16 +58,21 @@ def make_page():
 	html += "<script src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js\"></script>"
 	html += "<script src=\"./script.js\"></script></head>"
 	html += "<body><h1>Pool Tool When Swim?</h1>"
+	html += "<p><img src=\"pool_map.png\" height=500></p>"	
+	html += "<p>Pool times were current as of "
+	html += datetime.datetime.now().strftime("%-I:%M %p on %A %B %d, %Y")
+	html += "</p>"	
 	html += "<p>I'd like to swim at "
-	html += "<input type=\"text\" id=\"inputPool\" onkeyup=\"searchPool()\" placeholder=\"Search pools\">"
+	html += "<input type=\"text\" id=\"inputPool\" onkeyup=\"searchPool()\" placeholder=\"pool name\">"
 	html += " on "
-	html += "<input type=\"text\" id=\"inputDay\" onkeyup=\"searchDay()\" placeholder=\"Search day\">"
+	html += "<input type=\"text\" id=\"inputDay\" onkeyup=\"searchDay()\" placeholder=\"day\">"
 	html += " when the swimming type is "
-	html += "<input type=\"text\" id=\"inputClass\" onkeyup=\"searchClass()\" placeholder=\"Search class\">"
+	html += "<input type=\"text\" id=\"inputClass\" onkeyup=\"searchClass()\" placeholder=\"swimming type\">"
 	html += "<p>"
 	html += "<table id=\"poolTable\">"
 	html += "<tbody><tr><th>Pool Name</th><th>Day</th><th>Swimming Type</th><th>Start Time</th><th>End Time</th></tr>"
 
+	# each row in table
 	for class_time in pool_schedules:
 		html += "<tr>"
 		for elem in class_time:
@@ -75,7 +81,7 @@ def make_page():
 			html += "</td>"
 		html += "</tr>"
 
-	html += "</body></html>"
+	html += "</table></body></html>"
 
 	return html
 
