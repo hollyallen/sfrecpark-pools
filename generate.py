@@ -1,7 +1,5 @@
 from urllib.request import Request, urlopen
 from bs4 import BeautifulSoup
-import json
-import pandas
 
 pool_pages = {
 'balboa':'http://sfrecpark.org/destination/balboa-park/balboa-pool/',
@@ -52,13 +50,41 @@ def scrape(pool):
 				# only one schedule table per day, so leave this day now
 				break
 
+def make_page():
+	html = "<!DOCTYPE html>"
+	html += "<html><head><title>Pool Tool</title>"
+	html += "<link rel=\"stylesheet\" type=\"text/css\" href=\"./style.css\">"
+	html += "<script src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js\"></script>"
+	html += "<script src=\"./script.js\"></script></head>"
+	html += "<body><h1>Pool Tool When Swim?</h1>"
+	html += "<p>I'd like to swim at "
+	html += "<input type=\"text\" id=\"inputPool\" onkeyup=\"searchPool()\" placeholder=\"Search pools\">"
+	html += " on "
+	html += "<input type=\"text\" id=\"inputDay\" onkeyup=\"searchDay()\" placeholder=\"Search day\">"
+	html += " when the swimming type is "
+	html += "<input type=\"text\" id=\"inputClass\" onkeyup=\"searchClass()\" placeholder=\"Search class\">"
+	html += "<p>"
+	html += "<table id=\"poolTable\">"
+	html += "<tbody><tr><th>Pool Name</th><th>Day</th><th>Swimming Type</th><th>Start Time</th><th>End Time</th></tr>"
+
+	for class_time in pool_schedules:
+		html += "<tr>"
+		for elem in class_time:
+			html += "<td>"
+			html += elem
+			html += "</td>"
+		html += "</tr>"
+
+	html += "</body></html>"
+
+	return html
+
 if __name__ == "__main__":
     for k in pool_pages.keys():
-	    scrape(k)
-    
-    #with open('data.json', 'w') as outfile:
-	#    json.dump(pool_schedules, outfile)
+        scrape(k)
 
-    pools_dataframe = pandas.DataFrame(pool_schedules, columns=['pool', 'day', 'class', 'start', 'end'])
-    pools_dataframe.to_csv('data.csv', index=False, encoding='utf-8')  
+    html = make_page()
+    with open("index.html","w") as file:
+        file.write(html)
+
 

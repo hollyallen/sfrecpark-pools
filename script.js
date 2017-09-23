@@ -1,26 +1,3 @@
-function loadData() {
-	var csvfile = "data.csv";
-	$.get(csvfile, function (data) {
-	        var csvdata = Papa.parse(data, {header:false});
-	        console.log(csvdata.data);
-			createTable(csvdata.data);
-	    });
-}
-
-function createTable(input) {
-	table = document.createElement("table");
-	table.id = "poolTable";
-	// create 10 table rows, each with two cells
-	for (var i=0; i < input.length; i++) {
-    	var row = table.insertRow();  // DOM method for creating table rows
-    	for (var j=0; j < 5; j++) {
-	    	var cell = row.insertCell(j);  	    	
-	    	cell.innerHTML = input[i][j];
-    	}
-  	}
-  	document.body.appendChild( table);
-}
-
 function searchPool() {
 	// Declare variables 
 	var input, filter, table, tr, td, i;
