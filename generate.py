@@ -68,9 +68,9 @@ def make_page():
 	html += "<input type=\"text\" id=\"inputDay\" onkeyup=\"searchDay()\" placeholder=\"day\">"
 	html += " when the swimming type is "
 	html += "<input type=\"text\" id=\"inputClass\" onkeyup=\"searchClass()\" placeholder=\"swimming type\">"
-	html += "<p>"
-	html += "<table id=\"poolTable\">"
-	html += "<tbody><tr><th>Pool Name</th><th>Day</th><th>Swimming Type</th><th>Start Time</th><th>End Time</th></tr>"
+	html += "<p>\n"
+	html += "<table id=\"poolTable\">\n"
+	html += "<tbody><tr><th>Pool Name</th><th>Day</th><th>Swimming Type</th><th>Start Time</th><th>End Time</th></tr>\n"
 
 	# each row in table
 	for class_time in pool_schedules:
@@ -79,9 +79,9 @@ def make_page():
 			html += "<td>"
 			html += elem
 			html += "</td>"
-		html += "</tr>"
+		html += "</tr>\n"
 
-	html += "</table></body></html>"
+	html += "</table></body></html>\n"
 
 	return html
 
