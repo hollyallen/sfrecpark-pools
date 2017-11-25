@@ -52,25 +52,25 @@ def scrape(pool):
 				break
 
 def make_page():
-	html = "<!DOCTYPE html>"
-	html += "<html><head><title>Pool Tool</title>"
-	html += "<link rel=\"stylesheet\" type=\"text/css\" href=\"./style.css\">"
-	html += "<script src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js\"></script>"
-	html += "<script src=\"./script.js\"></script></head>"
-	html += "<body><h1>Pool Tool When Swim?</h1>"
-	html += "<p><img src=\"pool_map.png\" height=500></p>"	
+	html = "<!DOCTYPE html>\n"
+	html += "<html lang='en'>\n<head>\n<title>SF Pool Tool</title>\n<meta charset='UTF-8'/>\n"
+	html += "<link rel='stylesheet' type='text/css' href='./style.css'>\n"
+	html += "<script src='https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>\n"
+	html += "<script src='./script.js'></script>\n</head>\n"
+	html += "<body>\n<h1>Pool Tool When Swim?</h1>\n"
+	html += "<p><div class='map'><img src='pool_map.png' style='max-width: 1022px' alt='A map of San Francisco pools'/></div></p>\n"	
 	html += "<p>Pool times were current as of "
 	html += datetime.datetime.now().strftime("%-I:%M %p on %A %B %d, %Y")
-	html += "</p>"	
+	html += "</p>\n"	
 	html += "<p>I'd like to swim at "
-	html += "<input type=\"text\" id=\"inputPool\" onkeyup=\"searchPool()\" placeholder=\"pool name\">"
+	html += "<input type='text' id='inputPool' onkeyup='searchPool()'' placeholder='pool name'>"
 	html += " on "
-	html += "<input type=\"text\" id=\"inputDay\" onkeyup=\"searchDay()\" placeholder=\"day\">"
+	html += "<input type='text' id='inputDay' onkeyup='searchDay()'' placeholder='day'>"
 	html += " when the swimming type is "
-	html += "<input type=\"text\" id=\"inputClass\" onkeyup=\"searchClass()\" placeholder=\"swimming type\">"
+	html += "<input type='text' id='inputClass' onkeyup='searchClass()' placeholder='swimming type'>"
 	html += "<p>\n"
-	html += "<table id=\"poolTable\">\n"
-	html += "<tbody><tr><th>Pool Name</th><th>Day</th><th>Swimming Type</th><th>Start Time</th><th>End Time</th></tr>\n"
+	html += "<table id='poolTable'>\n"
+	html += "<tbody>\n<tr>\n<th>Pool Name</th><th>Day</th><th>Swimming Type</th><th>Start Time</th><th>End Time</th>\n</tr>\n"
 
 	# each row in table
 	for class_time in pool_schedules:
@@ -81,7 +81,9 @@ def make_page():
 			html += "</td>"
 		html += "</tr>\n"
 
-	html += "</table></body></html>\n"
+	html += "</table><br/>\n"
+	html += "<hr/>\n<p>Generated with <a href='https://github.com/hollyallen/sfrecpark-pools'>sfrecpark-pools</a>"
+	html += ", created by <a href='https://hollyallen.github.io/''>Holly Allen</a>.</p>\n</body>\n</html>\n"
 
 	return html
 
