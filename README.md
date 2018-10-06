@@ -4,7 +4,7 @@ This is a tool for deciding when to swim at [San Francisco public pools](http://
 First run generate.py to gather pool swim times from [sfrecpark.org](http://sfrecpark.org) and output the html file index.html. This page contains all the data and provides some simple filtering.
 
 You could then run a local web server (for example 'python -m SimpleHTTPServer 8000') to serve up the
-html and javascript. The most recent version is also served at https://www.sfrec.info/
+html and javascript. The most recent version is also served at https://sfrec.info/
 
 ## Getting Started
 
